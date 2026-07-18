@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Storyboard Builder</title>
+  <style>
+    html, body { margin: 0; height: 100%; }
+    body { background:#f5f4ee; color:#6e6a64; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+      display:grid; place-items:center; text-align:center; }
+    .mark { width:46px; height:46px; margin:0 auto 16px; border-radius:12px; display:grid; place-items:center;
+      background:linear-gradient(155deg,#e08862,#d97757); box-shadow:0 4px 14px rgba(217,119,87,.32); }
+    .spin { width:22px; height:22px; margin:14px auto 0; border:3px solid #e5e2da; border-top-color:#d97757;
+      border-radius:50%; animation:r .8s linear infinite; }
+    @keyframes r { to { transform: rotate(360deg); } }
+    h1 { font-size:1.05rem; color:#211f1c; margin:0 0 4px; font-weight:600; }
+    p { font-size:.85rem; margin:0; } a { color:#c15f3c; }
+    .err { display:none; margin-top:14px; font-size:.82rem; }
+  </style>
+</head>
+<body>
+  <div>
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round">
+        <path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6l-12.8 12.8" />
+      </svg>
+    </div>
+    <h1>Storyboard Builder</h1>
+    <p id="msg">여는 중…</p>
+    <div class="spin" id="spin"></div>
+    <p class="err" id="err">빌더 서버가 꺼져 있거나 연결이 끊긴 것 같아요.<br />
+      잠시 후 <a href="" onclick="location.reload();return false;">새로고침</a> 해주세요.</p>
+  </div>
+  <script>
+    var GIST = "https://gist.githubusercontent.com/placezero-archi/7e89de79bbfdae6c81625d3504faa760/raw/wiki_tunnel_url.json";
+    function fail(){ document.getElementById("spin").style.display="none";
+      document.getElementById("msg").textContent="연결 실패";
+      document.getElementById("err").style.display="block"; }
+    fetch(GIST + "?t=" + Date.now(), { cache: "no-store" })
+      .then(function(r){ return r.json(); })
+      .then(function(d){ if(d && d.url){ location.replace(d.url.replace(/\/$/,"") + "/sb-builder.html"); } else fail(); })
+      .catch(fail);
+  </script>
+</body>
+</html>
