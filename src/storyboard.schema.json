@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Storyboard v0.1 — 실무 화면설계서 스키마",
+  "type": "object",
+  "required": ["meta", "pages"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["title", "author", "team"],
+      "properties": {
+        "category": { "type": "string", "description": "표지 오렌지 소제목 (예: 공통, 에픽세븐)" },
+        "title": { "type": "string" },
+        "author": { "type": "string" },
+        "team": { "type": "string" },
+        "created": { "type": "string", "description": "YYYY. MM. DD" },
+        "updated": { "type": "string" },
+        "version": { "type": "string" },
+        "company": { "type": "string", "default": "Smilegate" },
+        "copyright": { "type": "string" }
+      }
+    },
+    "history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["date", "items", "drafter"],
+        "properties": {
+          "date": { "type": "string" },
+          "items": { "type": "array", "items": { "type": "string" }, "description": "각 항목에 페이지 참조 (pN) 포함 권장" },
+          "drafter": { "type": "string" }
+        }
+      }
+    },
+    "overview": {
+      "type": "array",
+      "description": "개요 페이지 rows",
+      "items": {
+        "type": "object",
+        "required": ["label", "lines"],
+        "properties": {
+          "label": { "type": "string" },
+          "lines": { "type": "array", "items": { "type": "string" }, "description": "불릿 줄. '  ' 들여쓰기로 하위 표현. **볼드** 마크업 지원" }
+        }
+      }
+    },
+    "pages": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["type"],
+        "properties": {
+          "type": { "enum": ["screen_pc", "screen_mo", "policy", "decision", "section_index"] },
+          "section": { "type": "string", "description": "상단 헤더바 제목 (예: 상세 UI : 상단 영역)" },
+          "badge": { "type": "string", "description": "수정사항 배지 텍스트 (예: 260220 수정사항)" },
+          "wireframe": {
+            "type": "object",
+            "description": "와이어프레임 캔버스. 좌표는 캔버스 기준 0~100 상대값",
+            "properties": {
+              "elements": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["kind", "x", "y", "w", "h"],
+                  "properties": {
+                    "kind": { "enum": ["band", "box", "text", "button", "tabs", "chips", "table", "input", "image_ph", "amount_bar", "note", "dashed"] },
+                    "x": { "type": "number" }, "y": { "type": "number" },
+                    "w": { "type": "number" }, "h": { "type": "number" },
+                    "text": { "type": "string", "description": "{변수}는 자동 노랑 하이라이트" },
+                    "variant": { "type": "string", "description": "dark|light|outline|active 등 종류별 변형" },
+                    "columns": { "type": "array", "items": { "type": "string" }, "description": "table/tabs/chips용" },
+                    "rows": { "type": "array", "items": { "type": "array", "items": { "type": "string" } } },
+                    "align": { "enum": ["left", "center", "right"] },
+                    "size": { "type": "number", "description": "폰트 pt 오버라이드" }
+                  }
+                }
+              },
+              "markers": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": ["no", "x", "y"],
+                  "properties": {
+                    "no": { "type": "string", "description": "1, 2, 1-1, 0 등" },
+                    "x": { "type": "number" }, "y": { "type": "number" }
+                  }
+                }
+              },
+              "omitted_below": { "type": "boolean", "description": "하단 '이하 생략' 점선" },
+              "omitted_top": { "type": "string", "description": "상단 생략 라벨 (예: 상단 영역 생략)" }
+            }
+          },
+          "descriptions": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["no", "title", "lines"],
+              "properties": {
+                "no": { "type": "string" },
+                "title": { "type": "string", "description": "요소명 (볼드 렌더)" },
+                "etype": { "type": "string", "description": "button|text|data|list|image|input|data + list" },
+                "lines": {
+                  "type": "array",
+                  "items": { "type": "string" },
+                  "description": "1) 항목은 자동 번호 그대로, '> ' 접두는 ➢ 하위, ==текст== 노랑, ~~취소~~ 회색취소선, [[링크]] 파랑"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
